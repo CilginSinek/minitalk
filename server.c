@@ -6,7 +6,9 @@ void string_handler(int sig, siginfo_t *info, void *context)
 {
     static int bit_index;
     static char character;
-
+    if(!character)
+        character = 0;
+    (void)info;
     (void)context;
     character |= (sig == SIGUSR2);
     bit_index++;
@@ -15,7 +17,7 @@ void string_handler(int sig, siginfo_t *info, void *context)
         bit_index = 0;
         if (character == '\0')
         {
-            kill(info->si_pid, SIGUSR2);
+            kill(info->si_pid, SIGUSR1);
             character = 0;
             return ;
         }
@@ -23,25 +25,24 @@ void string_handler(int sig, siginfo_t *info, void *context)
             write(1, &character, 1);
         character = 0;
         kill(info->si_pid, SIGUSR2);
+        usleep(100);
     }
     else
-        character <<= 1;
+        character = character << 1;
 }
 
 int main(void)
 {
-    struct sigaction saction;
-
-    pid_t pid;
-    int i;
+    struct sigaction sa;
+    int pid;
 
     pid = getpid();
     printf("%d\n", pid);
-    saction.sa_flags = SA_SIGINFO;
-    saction.sa_sigaction = string_handler;
-    sigemptyset(&saction.sa_mask);
-    sigaction(SIGUSR1, &saction, NULL);
-    sigaction(SIGUSR2, &saction, NULL);
+    sa.sa_flags = SA_SIGINFO;
+    sa.sa_sigaction = string_handler;
+    sigemptyset(&sa.sa_mask);
+    sigaction(SIGUSR1, &sa, NULL);
+    sigaction(SIGUSR2, &sa, NULL);
     while(1)
         pause();
     return 0;

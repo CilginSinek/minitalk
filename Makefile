@@ -1,8 +1,8 @@
 NAME1 = server
 NAME2 = client
 CFLAGS = -Wall -Wextra -Werror
-SRC1 = server.c
-SRC2 = client.c
+SRC1 = server.c utils.c
+SRC2 = client.c utils.c
 CC = cc
 OBJ1 = $(SRC1:.c=.o)
 OBJ2 = $(SRC2:.c=.o)
@@ -18,10 +18,10 @@ $(NAME2):$(OBJ2)
 	@echo "Client compiled successfully."
 
 clean:
-	/bin/rm -f  $(OBJ1) $(OBJ2)
+	$(RM)  $(OBJ1) $(OBJ2)
 
 fclean: clean
-	/bin/rm -f $(NAME1) $(NAME2)
+	$(RM) $(NAME1) $(NAME2)
 
 re: fclean all
 
