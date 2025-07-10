@@ -1,3 +1,17 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: iduman <iduman@student.42istanbul.com.tr>  +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/10 14:35:13 by iduman            #+#    #+#             */
+/*   Updated: 2025/07/10 14:35:13 by iduman           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "minitalk.h"
+
 static int	strlenspc(const char *str)
 {
 	int	len;
@@ -29,4 +43,31 @@ int	ft_atoi(const char *str)
 		i++;
 	}
 	return (result * a);
+}
+
+void	ft_putchar(char c)
+{
+	write(1, &c, 1);
+}
+
+void	ft_putnbr(int n)
+{
+	long	nbr;
+
+	nbr = n;
+	if (nbr < 0)
+	{
+		nbr *= -1;
+		ft_putchar('-');
+	}
+	if (nbr >= 10)
+	{
+		ft_putnbr(nbr / 10);
+		ft_putchar((nbr % 10) + '0');
+		nbr /= 10;
+	}
+	else
+	{
+		ft_putchar(nbr + '0');
+	}
 }
