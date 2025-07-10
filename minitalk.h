@@ -19,5 +19,4 @@
 int		ft_atoi(const char *str);
 void	ft_putchar(char c);
 void	ft_putnbr(int n);
-
 #endif
