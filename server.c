@@ -12,13 +12,14 @@
 
 #include "minitalk.h"
 
-void	string_handler(int sig)
+void	string_handler(int sig, siginfo_t *info, void *context)
 {
 	static int	bit_index;
 	static char	character;
 
 	if (!character)
 		character = 0;
+	(void)context;
 	character |= (sig == SIGUSR2);
 	bit_index++;
 	if (bit_index == 8)
@@ -26,6 +27,7 @@ void	string_handler(int sig)
 		bit_index = 0;
 		if (character == '\0')
 		{
+			kill(info->si_pid, SIGUSR1);
 			character = 0;
 			return ;
 		}
@@ -34,6 +36,7 @@ void	string_handler(int sig)
 	}
 	else
 		character = character << 1;
+	kill(info->si_pid, SIGUSR2);
 }
 
 int	main(void)
@@ -45,8 +48,8 @@ int	main(void)
 	ft_putnbr(pid);
 	ft_putchar('\n');
 	sigemptyset(&sa.sa_mask);
-	sa.sa_flags = 0;
-	sa.sa_handler = string_handler;
+	sa.sa_flags = SA_SIGINFO;
+	sa.sa_sigaction = string_handler;
 	sigaction(SIGUSR1, &sa, NULL);
 	sigaction(SIGUSR2, &sa, NULL);
 	while (1)
